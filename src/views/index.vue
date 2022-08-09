@@ -23,10 +23,10 @@
       return{
         msg: 'Welcome to Your Vue.js App',
         navlist:[
-          {name:'轮播',path:'/carousel',id:1},
+          {name:'自定义轮播',path:'/carousel',id:1},
           {name:'正则',path:'/',id:2}
         ],
-        curId:'',
+        curId:1,
       }
     },
     methods:{
@@ -36,6 +36,6 @@
     }
   }
 </script>
-<style>
+<style slot="scope">
   @import "../assets/css/index.css";
 </style>
