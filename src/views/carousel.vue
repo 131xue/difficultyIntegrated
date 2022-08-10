@@ -15,6 +15,7 @@
       </div>
       <div class="right_container">
         <div v-if="curId == 1">
+          <!--单张图片自定义轮播-->
           <div class="one_container_wrapper">
             <div class="one_container">
               <button type="button" @click="leftClick" class="left_carousel_arrow arrow_group">
@@ -28,10 +29,22 @@
               </button>
             </div>
           </div>
-
         </div>
-        <div v-else>
-
+        <div v-if="curId == 2">
+          <!--多张图片自定义轮播-->
+          <div class="multiple_container_wrapper">
+            <button type="button" @click="leftMultipleClick" class="left_arrow arrow_group">
+              <i class="el-icon-arrow-left"></i>
+            </button>
+            <div class="multiple_container" id="multiple_container">
+              <div class="img_item_wrapper" v-for="img in imgList">
+                <img :src="img.url" class="carousel_img"/>
+              </div>
+            </div>
+            <button type="button" @click="rightMultipleClick" class="right_arrow arrow_group">
+              <i class="el-icon-arrow-right"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -46,7 +59,9 @@
        msg:'carousel',
        curId:1,
        index:0,
-        viewVisible:true,
+       viewVisible:true,
+       rightNum:1,
+       leftNum:1,
        carouselList:[
          {id:1,name:'单张轮播'},
          {id:2,name:'多张轮播'}
@@ -66,6 +81,7 @@
       activeItem(id){
         this.curId = id
       },
+      //单张图片轮播
       leftClick(){
         if(this.index>0){
           this.viewVisible = false
@@ -85,6 +101,35 @@
             this.viewVisible = true
           })
 
+        }
+      },
+      //多张图片轮播
+      leftMultipleClick(){
+        //获取轮播对象
+        var imgGroup = document.getElementById('multiple_container')
+        //获取单张图片的宽度200px
+        var imgWidth = imgGroup.firstChild.offsetWidth
+        //轮播图片组相对于父元素的位置
+        var left = imgGroup.offsetLeft
+        //最大left不能大于0，=0时说明轮播到了第一张图片
+        if(left<0){
+          document.getElementById('multiple_container').style.left=left+(imgWidth+10)+'px'
+          this.leftNum ++
+        }
+      },
+      rightMultipleClick(){
+        //获取轮播对象
+        var imgGroup = document.getElementById('multiple_container')
+        //获取单张图片的宽度200px
+        var imgWidth = imgGroup.firstChild.offsetWidth
+        //可以左移的最大次数（向右切换，实际上是把整个图片组左移）
+        var count = imgGroup.childNodes.length - 3
+        //轮播图片组相对于父元素的位置
+        var left = imgGroup.offsetLeft
+        //最小的left,不能低于minLeft,等于minLeft说明切换到最后一张图片了
+        var minLeft = -count*(imgWidth+10)
+        if(left>minLeft){
+          document.getElementById('multiple_container').style.left=left-(imgWidth+10)+'px'
         }
       }
     }
@@ -131,10 +176,12 @@
     background: rgba(0,0,0,0.1);
     float: right;
   }
+  /*单张图片轮播*/
   .one_container_wrapper{
     width: 440px;
     height: 250px;
     margin: 0 auto;
+    padding-top: 100px;
   }
   .one_container{
     /*一个绝对定位的元素，如果父辈元素中也出现了已定位
@@ -167,7 +214,6 @@
     height: 100%;
     position: absolute;
     left: 0;
-    transition: all .5s;
   }
   .left_carousel_arrow{
     left:-10%;
@@ -186,5 +232,39 @@
   .one_container:hover .right_carousel_arrow{
     right: 2%;
     z-index: 99;
+  }
+  /*多张图片轮播*/
+  .multiple_container_wrapper{
+    position: relative;
+    width: 630px;
+    height: 150px;
+    margin: 0 auto;
+    overflow: hidden;
+    margin-top: 100px;
+  }
+  .multiple_container{
+    position: absolute;
+    height: 150px;
+    width: 9999px;
+    left: 0;
+    transition: all 0.5s;
+  }
+  .img_item_wrapper{
+    float: left;
+    margin-left: 10px;
+    width: 200px;
+    height: 150px;
+    position: relative;
+  }
+  .left_arrow{
+    left:2%;
+    z-index: 99;
+  }
+  .right_arrow{
+    right:1%;
+    z-index: 99;
+  }
+  .left_arrow:hover,.right_arrow:hover{
+    background-color: rgba(31,45,61,.40);
   }
 </style>
